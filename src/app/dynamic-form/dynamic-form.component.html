@@ -1,0 +1,75 @@
+<div *ngIf="object" [formGroup]="form">
+  <div [ngSwitch]="object.controlType">
+    <texfield *ngSwitchCase="'textbox'" [object]="object" [form]="form"></textfield>
+       <!-- <dropdown *ngSwitchCase="'dropdown'" [field]="field" [form]="form"></dropdown>
+      <checkbox *ngSwitchCase="'checkbox'" [field]="field" [form]="form"></checkbox>
+      <radio *ngSwitchCase="'radio'" [field]="field" [form]="form"></radio>
+      <file *ngSwitchCase="'file'" [field]="field" [form]="form"></file>
+      <div class="alert alert-danger my-1 p-2 fadeInDown animated" *ngIf="!isValid && isDirty">{{field.label}} is required</div> -->
+    <!-- <div *ngSwitchCase="'textbox'">
+      <mat-form-field hideRequiredMarker appearance="outline" [id]="object.id">
+        <mat-label>{{object.label}}</mat-label>
+        <input matInput mask="000-00-0000" [required]="object.required" [formControlName]="object.id" [(ngModel)]="object.id" />
+        <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearField(object.id)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    <div *ngSwitchCase="'dropdown'">
+      <mat-form-field hideRequiredMarker appearance="outline" [id]="object.id">
+        <mat-label>{{object.label}}</mat-label>
+        <select [id]="object.id" [formControlName]="object.id" [required]="object.required">
+          <option *ngFor="let opt of object.options" [value]="opt.id">{{opt.value}}</option>
+        </select>
+      </mat-form-field>
+    </div>
+    <div *ngSwitchCase="'radiobutton'">
+      <mat-form-field hideRequiredMarker appearance="outline" [id]="object.id">
+        <div *ngFor="let opt of object.options">
+          <mat-label>{{object.label}}</mat-label>
+          <input type="radio" [id]="opt.id" [value]="opt.value" [required]="object.required">
+        </div>
+      </mat-form-field>
+    </div>
+    <div *ngSwitchCase="'date'">
+      <mat-form-field hideRequiredMarker appearance="outline" [id]="object.id">
+        <mat-label>{{object.label}}</mat-label>
+        <input matInput mask="MM/DD/YYYY" [required]="object.required" [formControlName]="object.id" [(ngModel)]="object.id">
+        <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="object.id=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div> -->
+  </div>
+</div>
+
+<!--<mat-form-field hideRequiredMarker appearance="outline">
+  <mat-label>Enter SSN</mat-label>
+  <input matInput appSsnNumber mask="000-00-0000" required [(ngModel)]="ssnValue"
+         [formControl]="ssnFormControl">
+  <button mat-button *ngIf="ssnValue" matSuffix mat-icon-button aria-label="Clear" (click)="ssnValue=''">
+    <mat-icon>close</mat-icon>
+  </button>
+  <mat-error *ngIf="ssnFormControl.hasError('pattern')">
+    Please enter a valid SSN
+  </mat-error>
+  <mat-error *ngIf="ssnFormControl.hasError('required')">
+    SSN is <strong>required</strong>
+  </mat-error>
+</mat-form-field>-->
+<!--<mat-form-field hideRequiredMarker appearance="outline">
+  <mat-label>Verify SSN</mat-label>-->
+<!-- *ngIf="!ssnFormControl.hasError('pattern') && !ssnFormControl.hasError('required')"
+  <input appSsnNumber matInput mask="000-00-0000" type="text" [(ngModel)]="ssnVerifyValue"
+         [formControl]="ssnVerifyFormControl">
+  <button mat-button *ngIf="ssnVerifyValue" matSuffix mat-icon-button aria-label="Clear"
+          (click)="ssnVerifyValue=''">
+    <mat-icon>close</mat-icon>
+  </button>
+  <mat-error *ngIf="ssnVerifyFormControl.hasError('pattern')">
+    Please enter a valid SSN
+  </mat-error>
+  <mat-error *ngIf="ssnVerifyFormControl.hasError('required')">
+    Verification SSN is <strong>required</strong>
+  </mat-error>
+</mat-form-field>-->

@@ -1,0 +1,26 @@
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.css" rel="stylesheet">
+<div class="container">
+	<h2>{{pageTitle}}</h2>
+	<br/>
+		<!-- <ul id="menu">
+			<li><a href="Properties">View Properties</a></li>
+		</ul> -->
+		<router-outlet></router-outlet>
+		<!-- <nav id="menu">
+		  <a routerLink="/verify-ssn" routerLinkActive="active">Verify SSN</a>
+      <a routerLink="/crisis-center" routerLinkActive="active">Verify SSN</a>
+      <a routerLink="/crisis-center" routerLinkActive="active">Verify SSN</a>
+		</nav> -->
+		<br/>
+			<form *ngIf="objects" (ngSubmit)="onSubmit()" [formGroup]="form">
+				<div *ngFor="let object of objects" class="form-row">
+					<app-dynamic-form [object]="object" [form]="form"></app-dynamic-form>
+				</div>
+				<div class="form-row">
+					<button type="submit" [disabled]="!form.valid">Save</button>
+    </div>
+  </form>
+  <div *ngIf="payLoad" class="form-row">
+    <strong>Saved the following values</strong><br>{{payLoad}}
+  </div>
+</div>

@@ -1,0 +1,18 @@
+{
+    "obj_prop_opt_sets_id": 1057,
+    "enabled": "Y",
+    "dt_created": "2019-03-05T19:46:14.12",
+    "dt_available": "2019-03-05T19:46:14.12",
+    "dt_end": "2019-03-05T19:46:14.12",
+    "object_sets_id": 1011,
+    "object_prop_type": "Items",
+    "value_datatype": "Characters",
+    "property_name": "Value",
+    "has_parent": "N",
+    "has_child": "N",
+   "parent_obj_prop_sets_id": 0,
+   "property_value": "Staff_Type",
+   "obj_prop_sets_id": 1035,
+   "option_value": "EMP",
+   "option_name": "Test"
+}
