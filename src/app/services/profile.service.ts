@@ -1,16 +1,16 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { IStage } from '../models/stage';
-import { IGrip } from '../models/grip';
-import { IObjectSet } from '../models/objectset';
-import { IObjectPropSet } from '../models/objectpropset';
-import { IObjectPropOptSet } from '../models/objectpropoptset';
-import { ObjectBase } from '../classes/objectbase';
-import { DropDownObject } from '../classes/dropdownobject';
-import { TextboxObject } from '../classes/textboxobject';
+import { IStage } from '../../dynamic/models/stage';
+import { IObjectPropSet } from '../../dynamic/models/objectpropset';
+import { IObjectPropOptSet } from '../../dynamic/models/objectpropoptset';
+import { ObjectBase } from 'src/app/classes/objectbase';
+import { DropDownObject } from 'src/app/classes/dropdownobject';
+import { TextboxObject } from 'src/app/classes/textboxobject';
+import { RadioButtonObject } from 'src/app/classes/radiobuttonobject';
+import { DateObject } from 'src/app/classes/dateobject';
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +18,13 @@ import { TextboxObject } from '../classes/textboxobject';
 export class ProfileService {
 
   headers: HttpHeaders;
-  _pagefileurl: string = '../../assets/page.json';
+  _pagefileurl: string = 'src/app/assets/page.json';
   _optionfile: string = './assets/option.json';
   _testfileurl: string = './assets/test.json';
   objectPropSets: IObjectPropSet[];
   objectbase: ObjectBase<string>[];
+  rooturl = environment.rooturl;
+
 
   constructor(private http: HttpClient) {
 
@@ -33,16 +35,22 @@ export class ProfileService {
   }
 
   getProfile() {
-    return this.http.get<IStage[]>(this._pagefileurl);
+    console.log(this.rooturl + 'getprofileobjects');
+    return this.http.get<IStage[]>(this.rooturl + 'getprofileobjects');
+
+  }
+
+  getVerifySSN(stages: IStage[]) {
+
+    let stage: IStage = stages.find(element => element.stages_id === 1006);
+    return JSON.stringify(stage.grips[0].objectSets);
   }
 
   //Transform the objectsets into formgroups
-  getFormObjects(stages: IStage[]) {
+  getFormObjects(stages: IStage[], stage_id: number) {
 
-    let group: any = {};
     let objects: ObjectBase<any>[] = [];
-    let stage: IStage = stages.find(element => element.stages_id === 1006);
-    let objectSet: IObjectSet[] = stage.grips.find(e => e.grips_id === 1005).objectSets;
+    let stage: IStage = stages.find(element => element.stages_id === stage_id);
     let objectType: string = '';
     let id: string = '';
     let label: string = '';
@@ -53,17 +61,17 @@ export class ProfileService {
 
       objectType = objectSet.object_type;
 
-      id = objectSet.objectPropSets.find(element => element.property_name === "ID") != null ? objectSet.objectPropSets.find(element => element.property_name === "ID").property_value: '';
+      id = objectSet.objectPropSets.find(element => element.property_name === "ID") != null ? objectSet.objectPropSets.find(element => element.property_name === "ID").property_value : '';
 
-      label = objectSet.objectPropSets.find(element => element.property_name === "Label")!= null ?  objectSet.objectPropSets.find(element => element.property_name === "Label").property_value : '';
+      label = objectSet.objectPropSets.find(element => element.property_name === "Label") != null ? objectSet.objectPropSets.find(element => element.property_name === "Label").property_value : '';
 
-      placeholder = objectSet.objectPropSets.find(element => element.property_name === "Placeholder") ? 
-      objectSet.objectPropSets.find(element => element.property_name === "Placeholder").property_value : '';
+      placeholder = objectSet.objectPropSets.find(element => element.property_name === "Placeholder") ?
+        objectSet.objectPropSets.find(element => element.property_name === "Placeholder").property_value : '';
 
-      order = objectSet.objectPropSets.find(element => element.property_name === "Order") ? 
-      objectSet.objectPropSets.find(element => element.property_name === "Order").property_value : '';
+      order = objectSet.objectPropSets.find(element => element.property_name === "Order") ?
+        objectSet.objectPropSets.find(element => element.property_name === "Order").property_value : '';
 
-      if (objectType == 'Text') {
+      if (objectType == 'Text_Box') {
         objects.push(new TextboxObject({
           id: id,
           label: label,
@@ -87,7 +95,7 @@ export class ProfileService {
         }));
       }
       else if (objectType == 'Radio_Button') {
-        objects.push(new DropDownObject({
+        objects.push(new RadioButtonObject({
           id: id,
           label: label,
           options: [
@@ -100,7 +108,7 @@ export class ProfileService {
         }));
       }
       else if (objectType == 'Date') {
-        objects.push(new TextboxObject({
+        objects.push(new DateObject({
           id: id,
           label: label,
           value: placeholder,
@@ -110,7 +118,7 @@ export class ProfileService {
       }
 
     });
-    
+
     return objects;  //.sort((a, b) => a.order - b.order);
   }
 
@@ -134,3 +142,4 @@ export class ProfileService {
 
 
 }
+
