@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { environment } from '../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { IStage } from '../dynamic/models/stage';
@@ -18,7 +18,7 @@ import { DateObject } from '../dynamic/models/dateobject';
 export class ProfileService {
 
   headers: HttpHeaders;
-  _pagefileurl: string = 'src/app/assets/page.json';
+  _pagefileurl: string = '../../assets/page.json';
   _optionfile: string = './assets/option.json';
   _testfileurl: string = './assets/test.json';
   objectPropSets: IObjectPropSet[];
@@ -35,9 +35,7 @@ export class ProfileService {
   }
 
   getProfile() {
-    console.log(this.rooturl + 'getprofileobjects');
-    return this.http.get<IStage[]>(this.rooturl + 'getprofileobjects');
-
+    return this.http.get<IStage[]>(this._pagefileurl);
   }
 
   getVerifySSN(stages: IStage[]) {

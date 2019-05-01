@@ -1,7 +1,7 @@
 import { Component, Input, OnInit  } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ObjectBase } from '../classes/objectbase';
-import { ProfileService } from '../services/profile.service';
+import { ProfileService } from '../../services/profile.service';
 import { TextfieldComponent } from '../fields/textfield';
 
 @Component({
