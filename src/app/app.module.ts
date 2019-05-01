@@ -7,7 +7,7 @@ import { Router, } from '@angular/router';
 import { AppComponent } from './app.component';
 import { HelloComponent } from './hello.component';
 import { ProfileService } from './services/profile.service';
-import { DynamicFormComponent } from './dynamic-form/dynamic-form.component';
+import { DynamicFormComponent } from './dynamic/dynamic-form/dynamic-form.component';
 import { AppRoutingModule } from './app-routing.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TextfieldComponent } from './fields/textfield';

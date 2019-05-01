@@ -3,14 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { IStage } from '../../dynamic/models/stage';
-import { IObjectPropSet } from '../../dynamic/models/objectpropset';
-import { IObjectPropOptSet } from '../../dynamic/models/objectpropoptset';
-import { ObjectBase } from 'src/app/classes/objectbase';
-import { DropDownObject } from 'src/app/classes/dropdownobject';
-import { TextboxObject } from 'src/app/classes/textboxobject';
-import { RadioButtonObject } from 'src/app/classes/radiobuttonobject';
-import { DateObject } from 'src/app/classes/dateobject';
+import { IStage } from '../dynamic/models/stage';
+import { IObjectPropSet } from '../dynamic/models/objectpropset';
+import { IObjectPropOptSet } from '../dynamic/models/objectpropoptset';
+import { ObjectBase } from '../dynamic/models/objectbase';
+import { DropDownObject } from '../dynamic/models/dropdownobject';
+import { TextboxObject } from '../dynamic/models/textboxobject';
+import { RadioButtonObject } from '../dynamic/models/radiobuttonobject';
+import { DateObject } from '../dynamic/models/dateobject';
 
 @Injectable({
   providedIn: 'root'
