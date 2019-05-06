@@ -45,8 +45,8 @@ export class ProfileService {
   }
 
   //Transform the objectsets into formgroups
-  getFormObjects(stages: IStage[], stage_id: number) {
-
+getFormObjects(stages: IStage[], stage_id: number, grip: number)
+{
     let objects: ObjectBase<any>[] = [];
     let stage: IStage = stages.find(element => element.stages_id === stage_id);
     let objectType: string = '';
@@ -54,28 +54,84 @@ export class ProfileService {
     let label: string = '';
     let placeholder: string = '';
     let order: string = '';
+    let required: boolean = false;    
+    let regex: string = '';    
+    let maskType: string = '';
+    let maxLength: string = '';
+    let regexerrmes: string = '';
+    let readonlycriteria: string = 'false';
+    let middlename: boolean = false;
+    let objectpropoptset: IObjectPropOptSet[];
+    let dynclass: string = '';    
+    let information: string = '';
+    let requiredErrorMessage: string = '';
+    let defaultValue: string = '';
+    let dependsOn: string = 'false';
+    let dependsOnValue: string = 'false';
 
-    stage.grips[0].objectSets.forEach(objectSet => {
+    stage.grips[grip].objectSets.forEach(objectSet => {
 
       objectType = objectSet.object_type;
 
-      id = objectSet.objectPropSets.find(element => element.property_name === "ID") != null ? objectSet.objectPropSets.find(element => element.property_name === "ID").property_value : '';
+      required = objectSet.objectPropSets.find(element => element.property_name === "Required") ?
+        objectSet.objectPropSets.find(element => element.property_name === "Required").property_value == 'true' : false;
 
-      label = objectSet.objectPropSets.find(element => element.property_name === "Label") != null ? objectSet.objectPropSets.find(element => element.property_name === "Label").property_value : '';
+      regex = objectSet.objectPropSets.find(element => element.property_name === "Regex") ?
+        objectSet.objectPropSets.find(element => element.property_name === "Regex").property_value : '';
 
-      placeholder = objectSet.objectPropSets.find(element => element.property_name === "Placeholder") ?
-        objectSet.objectPropSets.find(element => element.property_name === "Placeholder").property_value : '';
+      maskType = objectSet.objectPropSets.find(element => element.property_name === "MaskType") ?
+        objectSet.objectPropSets.find(element => element.property_name === "MaskType").property_value : '';
 
-      order = objectSet.objectPropSets.find(element => element.property_name === "Order") ?
-        objectSet.objectPropSets.find(element => element.property_name === "Order").property_value : '';
+      maxLength = objectSet.objectPropSets.find(element => element.property_name === "MaxLength") ?
+        objectSet.objectPropSets.find(element => element.property_name === "MaxLength").property_value : '500';
 
-      if (objectType == 'Text_Box') {
+      regexerrmes = objectSet.objectPropSets.find(element => element.property_name === "RegexErrorMessage") ?
+        objectSet.objectPropSets.find(element => element.property_name === "RegexErrorMessage").property_value : '';
+
+      readonlycriteria = objectSet.objectPropSets.find(element => element.property_name === "ReadOnlyCriteria") ?
+        objectSet.objectPropSets.find(element => element.property_name === "ReadOnlyCriteria").property_value : 'false';
+
+      middlename = objectSet.objectPropSets.find(element => element.property_name === "MiddleName") ?
+        objectSet.objectPropSets.find(element => element.property_name === "MiddleName").property_value == 'true' : false;
+
+      objectpropoptset = objectSet.objectPropSets.find(element => element.property_name === "Value") ?
+        objectSet.objectPropSets.find(element => element.property_name === "Value").objectPropOptSets : null;
+
+      dynclass = objectSet.objectPropSets.find(element => element.property_name === "Class") ?
+        objectSet.objectPropSets.find(element => element.property_name === "Class").property_value : '';
+
+      information = objectSet.objectPropSets.find(element => element.property_name === "Information") ?
+        objectSet.objectPropSets.find(element => element.property_name === "Information").property_value : '';
+
+      requiredErrorMessage = objectSet.objectPropSets.find(element => element.property_name === "RequiredErrorMessage") ?
+        objectSet.objectPropSets.find(element => element.property_name === "RequiredErrorMessage").property_value : '';
+
+         defaultValue = objectSet.objectPropSets.find(element => element.property_name === "Default") ?
+        objectSet.objectPropSets.find(element => element.property_name === "Default").property_value : '';
+
+      dependsOn = objectSet.objectPropSets.find(element => element.property_name === "DependsOn") ?
+        objectSet.objectPropSets.find(element => element.property_name === "DependsOn").property_value : 'false';
+
+      dependsOnValue = objectSet.objectPropSets.find(element => element.property_name === "DependsOnValue") ?
+        objectSet.objectPropSets.find(element => element.property_name === "DependsOnValue").property_value : "No";
+
+
+      if (objectType == 'Text_Box' && middlename) {
         objects.push(new TextboxObject({
+          controlType: 'textboxmiddlename',
           id: id,
           label: label,
           value: placeholder,
-          required: true,
-          order: order
+          required: required,
+          order: order,
+          maskType: maskType,
+          regex: regex,
+          regexerrmes: regexerrmes,
+          readonlycriteria: readonlycriteria,
+          class: dynclass,
+          maxLength: maxLength,
+          information: information,
+          requiredErrorMessage: requiredErrorMessage
         }));
 
       }
@@ -83,26 +139,12 @@ export class ProfileService {
         objects.push(new DropDownObject({
           id: id,
           label: label,
-          options: [
-            { key: 'solid', value: 'Solid' },
-            { key: 'great', value: 'Great' },
-            { key: 'good', value: 'Good' },
-            { key: 'unproven', value: 'Unproven' }
-          ],
-          order: order
-        }));
-      }
-      else if (objectType == 'Radio_Button') {
-        objects.push(new RadioButtonObject({
-          id: id,
-          label: label,
-          options: [
-            { key: 'solid', value: 'Solid' },
-            { key: 'great', value: 'Great' },
-            { key: 'good', value: 'Good' },
-            { key: 'unproven', value: 'Unproven' }
-          ],
-          order: order
+          optionvalues: objectpropoptset,
+          order: order,
+          required: required,
+          requiredErrorMessage: requiredErrorMessage,
+          dependsOn: dependsOn,
+          dependsOnValue: dependsOnValue
         }));
       }
       else if (objectType == 'Date') {
@@ -110,14 +152,37 @@ export class ProfileService {
           id: id,
           label: label,
           value: placeholder,
-          required: true,
-          order: order
+          required: required,
+          order: order,
+          placeholder: placeholder
         }));
       }
-
+      if (objectType == 'Radio_Button') {
+       
+        objectpropoptset.forEach(objectpropopt => {          
+          if (objectpropopt.option_value === defaultValue) {
+            objectpropopt.option_default = true;
+          }
+          else {
+            objectpropopt.option_default = false;
+          }
+         
+        });
+        objects.push(new RadioButtonObject({
+          id: id,
+          label: label,
+          optionvalues: objectpropoptset,
+          order: order,          
+          required: required,          
+          requiredErrorMessage: requiredErrorMessage,
+          information: information,
+          dependsOn: dependsOn,
+          dependsOnValue: dependsOnValue
+        }));
+      }
     });
 
-    return objects;  //.sort((a, b) => a.order - b.order);
+    return objects.sort((a, b) => a.order - b.order);
   }
 
   toFormGroup(objects: ObjectBase<any>[]) {
