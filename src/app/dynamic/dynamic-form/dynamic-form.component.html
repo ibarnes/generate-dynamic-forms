@@ -1,38 +1,83 @@
 <div *ngIf="object" [formGroup]="form">
   <div [ngSwitch]="object.controlType">
     <div *ngSwitchCase="'textbox'">
-      <mat-form-field hideRequiredMarker appearance="outline" [id]="object.id">
-        <mat-label>{{object.label}}</mat-label>
-        <input matInput mask="000-00-0000" [required]="object.required" [formControlName]="object.id" [(ngModel)]="object.id" />
-        <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearField(object.id)">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
+      <div class="epic-data-entry__field">
+        <label class="stepper-label">{{object.label}}</label>
+        <app-information-popup [DisplayText]="object.information"></app-information-popup>
+        <br />
+        <mat-form-field hideRequiredMarker appearance="outline" [id]="object.id">
+          <input matInput [maxLength]="object.maxLength" [appMask]="object.maskType" [ngClass]="object.class" [readonly]="readonlycriteria(object.readonlycriteria)" [pattern]="object.regex" [required]="object.required" [value]="form.get(object.id).value" [formControlName]="object.id" />
+          <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearField(object.id)">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="object.required">The {{object.label}} is a required field.</mat-error>
+          <!--CACI-4416-->
+          <mat-error *ngIf="getformfield(object.id).errors?.pattern">{{object.regexerrmes}}</mat-error>
+        </mat-form-field>
+      </div>
     </div>
-    <div *ngSwitchCase="'dropdown'">
-      <mat-form-field hideRequiredMarker appearance="outline" [id]="object.id">
-        <mat-label>{{object.label}}</mat-label>
-        <select [id]="object.id" [formControlName]="object.id" [required]="object.required">
-          <option *ngFor="let opt of object.options" [value]="opt.id">{{opt.value}}</option>
-        </select>
-      </mat-form-field>
+    <!--CACI-4308-->
+    <div *ngSwitchCase="'textboxmiddlename'">
+      <div class="epic-data-entry__field">
+        <label class="stepper-label">{{object.label}}</label>
+        <app-information-popup [DisplayText]="object.information"></app-information-popup>
+        <br />
+        <mat-form-field hideRequiredMarker appearance="outline" [id]="object.id">
+          <input matInput (keyup)="convertNMN(object.id)" [maxlength]="object.maxlength" [ngClass]="object.class" [readonly]="readonlycriteria(object.readonlycriteria)" [mask]="object.mask" [pattern]="object.regex" [required]="object.required" [value]="form.get(object.id).value" [formControlName]="object.id" />
+          <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearField(object.id)">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="object.required">{{object.label}} is a required field.</mat-error>
+          <mat-error *ngIf="getformfield(object.id).errors?.pattern">{{object.regexerrmes}}</mat-error>
+        </mat-form-field>
+        <mat-checkbox *ngIf="middlenamecriteria(object.id) && !getformfield(object.id).errors?.pattern">
+          This is the full middle name
+        </mat-checkbox>
+      </div>
     </div>
-    <div *ngSwitchCase="'radiobutton'">
-      <mat-form-field hideRequiredMarker appearance="outline" [id]="object.id">
-        <div *ngFor="let opt of object.options">
-          <mat-label>{{object.label}}</mat-label>
-          <input type="radio" [id]="opt.id" [value]="opt.value" [required]="object.required">
-        </div>
-      </mat-form-field>
+    <!--CACI-4418-->
+    <div *ngSwitchCase="'dropdown'" [hidden]="hiddenCriteria(object.dependsOn, object)">
+      <div class="epic-data-entry__field">
+        <label class="stepper-label">{{object.label}}</label>
+        <app-information-popup [DisplayText]="object.information"></app-information-popup>
+        <br />
+        <mat-form-field hideRequiredMarker appearance="outline" [id]="object.id">
+          <mat-select matNativeControl [id]="object.id" [formControlName]="object.id" [required]="requiredCriteria(object.dependsOn)" (selectionChange)="optionSelected($event,object,this)">
+            <mat-option *ngFor="let opt of object.optionvalues" [value]="opt.option_value">{{opt.option_value}}</mat-option>
+          </mat-select>
+          <!--CACI-4492-->
+          <mat-error *ngIf="object.required">{{object.requiredErrorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
     </div>
+   
+    <div *ngSwitchCase="'radiobutton'" [hidden]="hiddenCriteria(object.dependsOn, object)">
+      <div class="epic-data-entry__field">
+        <label class="stepper-label">{{object.label}}</label>
+        <app-information-popup [DisplayText]="object.information"></app-information-popup>
+        <br />
+        <mat-radio-group [id]="object.id" [formControlName]="object.id" [required]="object.required">
+          <mat-radio-button *ngFor="let opt of object.optionvalues" [value]="opt.option_value" [checked]="opt.option_default">
+            {{opt.option_value}}
+          </mat-radio-button>
+        </mat-radio-group>
+        <!--CACI-4469 Check to see if Radio Button is in dirty state and if no value has been selected-->
+        <mat-error *ngIf="object.required && form.controls[object.id].dirty && form.controls[object.id].value == ''">{{object.requiredErrorMessage}}</mat-error>
+        <br />
+      </div>
+    <!--CACI-4419-->
     <div *ngSwitchCase="'date'">
-      <mat-form-field hideRequiredMarker appearance="outline" [id]="object.id">
-        <mat-label>{{object.label}}</mat-label>
-        <input matInput mask="MM/DD/YYYY" [required]="object.required" [formControlName]="object.id" [(ngModel)]="object.id">
-        <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="object.id=''">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
+      <div class="epic-data-entry__field">
+        <label class="stepper-label">{{object.label}}</label>
+        <app-information-popup [DisplayText]="object.information"></app-information-popup>
+        <br />
+        <mat-form-field hideRequiredMarker appearance="outline" [id]="object.id">
+          <input matInput [min]="dobMin" [max]="dobMax" [matDatepicker]="picker" [placeholder]="object.placeholder" [required]="object.required" [formControlName]="object.id">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="object.required">{{object.label}} is a required field.</mat-error>
+        </mat-form-field>
+      </div>
     </div>
   </div>
 </div>

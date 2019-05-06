@@ -15,4 +15,5 @@ export interface IObjectPropOptSet {
         obj_prop_sets_id: number;
         option_value: string;
         option_name: string;
+        cascaded_parent:  string;
 }

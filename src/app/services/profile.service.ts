@@ -68,6 +68,10 @@ getFormObjects(stages: IStage[], stage_id: number, grip: number)
     let defaultValue: string = '';
     let dependsOn: string = 'false';
     let dependsOnValue: string = 'false';
+    let cascadedParent: string = '';
+    let cascading: boolean = false;
+    let cascadedobjectpropset: IObjectPropSet[];
+
 
     stage.grips[grip].objectSets.forEach(objectSet => {
 
@@ -115,6 +119,14 @@ getFormObjects(stages: IStage[], stage_id: number, grip: number)
       dependsOnValue = objectSet.objectPropSets.find(element => element.property_name === "DependsOnValue") ?
         objectSet.objectPropSets.find(element => element.property_name === "DependsOnValue").property_value : "No";
 
+      cascading = objectSet.objectPropSets.find(element => element.property_name === "Cascading") ?
+        objectSet.objectPropSets.find(element => element.property_name === "Cascading").property_value == 'true' : false;
+
+      if (cascading) {
+        cascadedobjectpropset = objectSet.objectPropSets.filter(element => element.property_name === "Value");        
+        cascadedobjectpropset.forEach(objectpropset => {          
+          objectpropoptset = objectpropoptset.concat(objectpropset.objectPropOptSets).filter(f => f.has_parent === 'Y');          
+        });
 
       if (objectType == 'Text_Box' && middlename) {
         objects.push(new TextboxObject({
@@ -144,7 +156,8 @@ getFormObjects(stages: IStage[], stage_id: number, grip: number)
           required: required,
           requiredErrorMessage: requiredErrorMessage,
           dependsOn: dependsOn,
-          dependsOnValue: dependsOnValue
+          dependsOnValue: dependsOnValue,
+          cascading: cascading 
         }));
       }
       else if (objectType == 'Date') {
@@ -177,7 +190,8 @@ getFormObjects(stages: IStage[], stage_id: number, grip: number)
           requiredErrorMessage: requiredErrorMessage,
           information: information,
           dependsOn: dependsOn,
-          dependsOnValue: dependsOnValue
+          dependsOnValue: dependsOnValue,
+          information: information
         }));
       }
     });
